@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OM Logistics - Location Finder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>OM Logistics</h1>
+    </div>
+
+    <div class="container">
+        <div class="search-container">
+            <input id="startLocation" type="text" placeholder="Start location...">
+            <input id="endLocation" type="text" placeholder="Destination...">
+            <button onclick="trackRoute()">Track</button>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <script src="script.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEzK_TP5i4uWgVp7EckL_WUTvdsWWxTqQ&libraries=places&callback=initMap"></script>
+</body>
+</html>

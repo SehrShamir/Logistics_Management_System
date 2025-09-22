@@ -1,0 +1,288 @@
+/* Basic Reset */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url('background.jpg'); /* Replace with your image URL */
+  background-size: cover; /* Ensures the image covers the entire page */
+  background-position: center; /* Centers the background image */
+  background-attachment: fixed; /* Keeps the background fixed while scrolling */
+  color: white;
+}
+/* General Modal Overlay */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, #1a1a1a, #0f0f0f);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Login Container Layout */
+.login-container {
+  text-align: center;
+  color: #fff;
+}
+
+/* Brand Title */
+.brand-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #4faaff;
+  margin-bottom: 0;
+}
+
+.brand-title .highlight {
+  color: #00ff99;
+}
+
+/* Login subtitle */
+.login-subtitle {
+  margin-top: 0;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+/* Login Box */
+.login-box {
+  background-color: #2c2f36;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* Form Inputs */
+.login-box input[type="text"],
+.login-box input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin: 12px 0;
+  border: none;
+  border-radius: 5px;
+  background-color: #3c4048;
+  color: white;
+}
+
+/* Remember Me */
+.remember-me {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.remember-me input[type="checkbox"] {
+  margin: 0;
+  margin-right: 4px; /* Just a tiny space so it doesn't touch the text */
+}
+
+
+
+.remember-me label {
+  margin-left: 5px;
+}
+
+/* Submit Button */
+.form-btn {
+  width: 100%;
+  background-color: #3399ff;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.form-btn:hover {
+  background-color: #1d78c1;
+}
+
+/* Links */
+.forgot-link, .signup-link {
+  font-size: 0.85rem;
+  margin-top: 10px;
+}
+
+.forgot-link a, .signup-link .toggle-link {
+  color: #4faaff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.forgot-link a:hover, .signup-link .toggle-link:hover {
+  text-decoration: underline;
+}
+
+/* Hide Element */
+.hidden {
+  display: none;
+}
+
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f3f3f3;
+  padding: 10px 20px;
+}
+
+.logo {
+  font-size: 24px;
+}
+
+.green {
+  color: green;
+}
+
+.nav-btn {
+  margin-left: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.page {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 300px;
+}
+
+input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+}
+
+.form-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.toggle-link {
+  color: blue;
+  cursor: pointer;
+}
+
+/* Hide/Show Class */
+.hidden {
+  display: none;
+}
+
+/* Dashboard content */
+.content {
+  padding: 20px;
+}
+body {
+  background-color: #1c1f2a;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+#dashboardContent h3, h4 {
+  margin-top: 0;
+  color: #ffffff;
+}
+.tracking-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+}
+
+.tracking-box {
+  background-color: #2a2f4a;
+  width: 45%;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  position: relative;
+}
+
+.tracking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tracking-header h3 {
+  font-weight: 600;
+}
+
+.tracking-search {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background-color: #444c66;
+  color: white;
+  width: 150px;
+}
+
+.tracking-map-container {
+  background-color: #3c4258;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.tracking-map-container h4 {
+  margin-bottom: 10px;
+}
+
+#map {
+  height: 500px;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+.tracking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2a2f4a;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.tracking-search {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background-color: #e8f0fe;
+  color: #000;
+}
+
