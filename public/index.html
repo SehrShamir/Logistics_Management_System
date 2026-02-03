@@ -48,29 +48,46 @@
 </div>
 
   <!-- Dashboard Page -->
-  <div id="dashboardPage" class="hidden">
-    <div class="navbar">
-      <h1 class="logo">OM<span class="green">Logistics</span></h1>
-      <div>
-        <button onclick="showHome()" class="nav-btn">Home</button>
-        <button onclick="showProfile()" class="nav-btn">Profile</button>
-        <button onclick="logout()" class="nav-btn">Logout</button>
-        <button onclick="showTracking()" class="nav-btn">Real-Time Tracking</button>
-        <button onclick="generateReceipt()" class="nav-btn">Generate Receipt</button>
-        
-
-      </div>
-    </div>
-   
-    <div class="content" id="dashboardContent">
-      <h2>Welcome Back!</h2>
-      <p>Track and manage your logistics in real time.</p>
+  <!-- Dashboard Page -->
+<div id="dashboardPage" class="hidden">
+  <div class="navbar">
+    <h1 class="logo">OM<span class="green">Logistics</span></h1>
+    <div>
+      <button onclick="showHome()" class="nav-btn">Home</button>
+      <button onclick="showProfile()" class="nav-btn">Profile</button>
+      <button onclick="logout()" class="nav-btn">Logout</button>
+      <button onclick="showTracking()" class="nav-btn">Real-Time Tracking</button>
+      <button onclick="generateReceipt()" class="nav-btn">Generate Receipt</button>
     </div>
   </div>
+
+  <!-- HOME CONTENT -->
+  <div class="content" id="dashboardContent">
+    <h2>Welcome Back!</h2>
+    <p>Track and manage your logistics in real time.</p>
+  </div>
+
+  <!-- TRACKING PAGE -->
+  <div class="content hidden" id="trackingPage">
+    <h2>📍 Real-Time Tracking</h2>
+
+    <div class="tracking-controls">
+      <input id="startLocation" type="text" placeholder="Start Location" />
+      <input id="endLocation" type="text" placeholder="Destination" />
+      <button onclick="startTracking()">Track</button>
+    </div>
+
+    <div id="map"></div>
+  </div>
+</div>
+
+
   
 
   <script src="script.js"></script>
-  <script async defer 
-  src="https://maps.gomaps.pro/maps/api/js?key=AlzaSy8ubp3Kq-ULckmnVW_Cg70x-v32ozVP8qM&callback=initMap&libraries=places">
+  <script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2GNQg1cA-0QS9uqSqTPCKGbNvCy_wg8E&libraries=places,marker&callback=initMap&loading=async"
+  async
+  defer>
 </script></body>
 </html>

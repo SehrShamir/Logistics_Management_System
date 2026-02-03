@@ -73,11 +73,18 @@ loginForm.addEventListener("submit", async function (e) {
 
     if (data.success && !isRegistering) {
       // Login successful: move to dashboard
+      const user = {
+  name: username,
+  phone: phone || "N/A",
+  email: `${username}@example.com`
+};
+
+localStorage.setItem("currentUser", JSON.stringify(user));
       loginModal.classList.add("hidden");
       dashboardPage.classList.remove("hidden");
       if (navbar) navbar.style.display = "none";
 
-      // You can define what showHome() does — here it's assumed to update dashboardContent
+      
       showHome();
     }
 
@@ -114,67 +121,32 @@ function logout() {
   navbar.style.display = "block"; // ✅ Show navbar again on logout
 }
 
+let mapInitialized = false;
+
 function showTracking() {
-  const dashboardContent = document.getElementById('dashboardContent');
+  const dashboardContent = document.getElementById("dashboardContent");
 
   dashboardContent.innerHTML = `
     <div class="tracking-wrapper">
       <div class="tracking-box">
         <div class="tracking-header">
           <h3>Current Scenario</h3>
-          <input id="search-box" type="text" placeholder="Search..." class="tracking-search" />
+          <input id="search-box" type="text" placeholder="Search destination..." />
         </div>
-        <div class="tracking-map-container">
-          <h4>Delivery Boys</h4>
-          <div id="map" style="height: 500px; width: 100%; margin-top: 10px; border-radius: 10px;"></div>
-        </div>
+        <div id="map" style="height:500px;width:100%;margin-top:10px;border-radius:10px;"></div>
       </div>
     </div>
   `;
 
-  initMap(); // Only call after #map div is inserted
+  if (!mapInitialized) {
+    setTimeout(initMap, 100); // ensure DOM is ready
+    mapInitialized = true;
+  }
 }
 
 
 
-let currentUser = {}; // Store current user details globally
 
-loginForm.addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  const phone = document.getElementById("phone").value;
-  const msg = document.getElementById("msg");
-
-  const url = isRegistering ? "/register" : "/login";
-  const body = isRegistering ? { username, password, phone } : { username, password };
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-
-  const data = await res.json();
-  msg.style.color = data.success ? "green" : "red";
-  msg.textContent = data.success
-    ? (isRegistering ? "Registration successful! Please log in." : "Login successful!")
-    : (data.message || "An error occurred.");
-
-  if (data.success && !isRegistering) {
-    // ✅ Save user info globally (from backend or frontend form)
-    currentUser = {
-      name: data.name || username,
-      phone: data.phone || "N/A",
-      email: data.email || `${username}@example.com` // Replace with real logic
-    };
-
-    loginModal.classList.add("hidden");
-    dashboardPage.classList.remove("hidden");
-    navbar.style.display = "none";
-    showHome();
-  }
-});
 
 
 
@@ -213,44 +185,47 @@ function getRouteMidpoint(path) {
 
 
 function generateReceipt() {
-  const timestamp = new Date().toLocaleString();
 
-  const deliveryId = "9fd05cbecad5afca_51";
-  const orderStatus = "In Process";
-  const unitCost = 12.5;
-  const total = unitCost * 1.125;
+  // ✅ ALWAYS define variables FIRST
+  const orderStatus = "Delivered";
+  const deliveryId = "DLV-" + Math.floor(Math.random() * 100000);
+  const unitCost = 500;
+  const total = unitCost;
 
-  // Use logged-in user's info
-  const { name, phone, email } = currentUser;
+  const userData = localStorage.getItem("currentUser");
+  if (!userData) {
+    alert("User not logged in");
+    return;
+  }
+
+  const { name, phone, email } = JSON.parse(userData);
 
   dashboardContent.innerHTML = `
-    <div style="display: flex; justify-content: flex-end; padding: 20px;">
-      <div style="background-color: #1f2b37; color: white; width: 50%; padding: 30px; border-radius: 12px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h2 style="color: #41d1b9;">OM<span style="color: white;">Logistics</span></h2>
-          <div><strong>Invoice #</strong> 17897</div>
+    <div style="display:flex;justify-content:flex-end;padding:20px;">
+      <div style="background:#1f2b37;color:white;width:55%;padding:30px;border-radius:12px;">
+        
+        <div style="display:flex;justify-content:space-between;">
+          <h2 style="color:#41d1b9;">OM<span style="color:white;">Logistics</span></h2>
+          <div><strong>Invoice #</strong> ${Date.now()}</div>
         </div>
 
-        <hr style="border-color: #444;" />
+        <hr style="border-color:#444"/>
 
-        <div style="margin-top: 20px;">
-          <p><strong>Company ABC</strong><br>Paschim Vihar<br>Near Metor<br>📞 ${phone}</p>
+        <p><strong>Company ABC</strong><br>Paschim Vihar<br>📞 ${phone}</p>
+
+        <div style="text-align:right">
+          <p><strong>Status:</strong> 
+            <span style="background:#e91e63;padding:4px 8px;border-radius:4px;">
+              ${orderStatus}
+            </span>
+          </p>
+          <p><strong>Delivery ID:</strong> ${deliveryId}</p>
         </div>
 
-        <div style="text-align: right;">
-          <p><strong>Order Status:</strong> <span style="background-color: #e91e63; padding: 2px 6px; border-radius: 4px;">${orderStatus}</span></p>
-          <p><strong>Delivery Man’s Id:</strong> ${deliveryId}</p>
-        </div>
-
-        <table style="width: 100%; margin-top: 20px; background-color: #2d3a4a; border-radius: 8px; padding: 10px;">
+        <table style="width:100%;margin-top:20px;background:#2d3a4a;border-radius:8px">
           <thead>
-            <tr style="text-align: left;">
-              <th>#</th>
-              <th>Delivery Man’s Name</th>
-              <th>Phone Number</th>
-              <th>Email</th>
-              <th>Unit Cost</th>
-              <th>Total</th>
+            <tr>
+              <th>#</th><th>Name</th><th>Phone</th><th>Email</th><th>Cost</th><th>Total</th>
             </tr>
           </thead>
           <tbody>
@@ -260,54 +235,23 @@ function generateReceipt() {
               <td>${phone}</td>
               <td>${email}</td>
               <td>${unitCost}</td>
-              <td>${total.toFixed(6)}</td>
+              <td>${total}</td>
             </tr>
           </tbody>
         </table>
 
-        <div style="margin-top: 20px;">
-          <p><strong>Sub-total:</strong> ${total.toFixed(6)}</p>
-          <p>Discount: 12.5%</p>
-          <p>VAT: 12.5%</p>
-          <hr />
-          <h2 style="text-align: right;">${total.toFixed(6)}</h2>
+        <h2 style="text-align:right;margin-top:20px;">₹ ${total}</h2>
+
+        <div style="text-align:right;margin-top:20px;">
+          <button onclick="showHome()">Done</button>
+          <button onclick="showDataSummary()">Data</button>
         </div>
 
-        <div style="margin-top: 20px; font-size: 12px; color: #ccc;">
-          <p><strong>PAYMENT TERMS AND POLICIES</strong></p>
-          <p>All accounts are to be paid within 1 day from receipt of invoice. To be paid by cash at the time of pick up.</p>
-        </div>
-
-        <div style="text-align: right; margin-top: 20px;">
-        <button style="padding: 8px 16px; background-color: #2196f3; border: none; border-radius: 4px; color: white;" onclick="showHome()">Done</button>
-         <button style="padding: 8px 16px; background-color: #41d1b9; border: none; border-radius: 4px; color: white; margin-left: 10px;" onclick="showReceiptSummary()">Data</button>  
-        </div>
       </div>
     </div>
   `;
-
-  // Store in database
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return res.json();
-    })
-    .then((data) => {
-      // Handle data
-    })
-    .catch((error) => {
-      console.error("Fetch error:", error);
-      msg.style.color = "red";
-      msg.textContent = "An error occurred. Please try again later.";
-    });
-  
 }
+
 
 function showDataSummary() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -395,65 +339,61 @@ let userLocation = { lat: 28.6139, lng: 77.2090 }; // Default to Delhi
 
 // Initialize the Map
 function initMap() {
-  map = new google.maps.Map(document.getElementById("map"), {
+  const mapDiv = document.getElementById("map");
+  if (!mapDiv) {
+    console.error("❌ Map container not found");
+    return;
+  }
+
+  map = new google.maps.Map(mapDiv, {
     zoom: 14,
-    center: userLocation, // Start at the default location (Delhi)
+    center: userLocation,
   });
 
   geocoder = new google.maps.Geocoder();
   directionsService = new google.maps.DirectionsService();
 
-  // Try to get user's location
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        userLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-        map.setCenter(userLocation);
+ if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition((pos) => {
+    userLocation = {
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+    };
 
-        new google.maps.Marker({
-          position: userLocation,
-          map: map,
-          title: "You are here",
-        });
-      },
-      () => {
-        alert("Geolocation failed. Showing default location.");
-        // If geolocation fails, default to Delhi (already set)
-      }
-    );
-  } else {
-    alert("Geolocation not supported by your browser.");
-  }
+    map.setCenter(userLocation);
 
-  // Set up the search box after map is initialized
-  setupSearchListener();
+    new google.maps.marker.AdvancedMarkerElement({
+      map: map,
+      position: userLocation,
+      title: "You are here",
+    });
+  });
 }
+
+
+ 
+}
+
+
 
 // Set up the search box listener
 function setupSearchListener() {
   const input = document.getElementById("search-box");
-  if (!input) return;
+  if (!input) {
+    console.warn("⚠️ search-box not found");
+    return;
+  }
 
   const autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.bindTo("bounds", map); // Restrict results to the current map area
+  autocomplete.bindTo("bounds", map);
 
   autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
-
-    if (!place.geometry || !place.geometry.location) {
-      alert("Invalid location. Try selecting one from the suggestions.");
-      return;
-    }
-
-    // Proceed to show route after selecting a place
+    if (!place.geometry) return;
     calculateAndDisplayRoutes(place.geometry.location);
   });
 
-  // Handle the Enter key fallback
-  input.addEventListener("keydown", function (e) {
+  input.onkeydown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
 
@@ -462,15 +402,17 @@ function setupSearchListener() {
 
       const service = new google.maps.places.PlacesService(map);
       service.textSearch({ query }, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+        if (status === "OK" && results.length) {
           calculateAndDisplayRoutes(results[0].geometry.location);
         } else {
-          alert(`No location found for "${query}". Try using a nearby landmark or pick from suggestions.`);
+          alert("Location not found");
         }
       });
     }
-  });
+  };
 }
+
+
 
 // Calculate and display the routes
 function calculateAndDisplayRoutes(destination) {
@@ -540,31 +482,4 @@ function calculateAndDisplayRoutes(destination) {
 
 
 
-  // Fallback: handle Enter key when user does not pick suggestion
-  input.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
 
-      const query = input.value.trim();
-      if (!query) return;
-
-      const service = new google.maps.places.PlacesService(map);
-      service.textSearch({ query }, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
-          calculateAndDisplayRoutes(results[0].geometry.location);
-        } else {
-          alert(`No location found for "${query}". Try using a nearby landmark or pick from suggestions.`);
-        }
-      });
-    }
-  }); // ← This closing parenthesis was missing
-
-
-  
-    
-
-
-// Manual fallback
-window.onload = function() {
-  initMap();
-};
