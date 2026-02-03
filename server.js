@@ -10,12 +10,12 @@ const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Middleware
+//  Middleware
 app.use(express.json()); // Parses application/json
 app.use(express.urlencoded({ extended: true })); // Parses application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname, 'public'))); // Serves static files from /public
 
-// ✅ Login route
+//  Login route
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -36,7 +36,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// ✅ User registration route
+//  User registration route
 app.post('/register', async (req, res) => {
   const { username, password, phone } = req.body;
 
@@ -86,7 +86,7 @@ app.get('/receipt-summary', (req, res) => {
 });
 
 
-// ✅ Receipt saving route
+// Receipt saving route
 app.post('/receipt', async (req, res) => {
   const { timestamp } = req.body;
 
@@ -99,12 +99,13 @@ app.post('/receipt', async (req, res) => {
   }
 });
 
-// ✅ Serve homepage
+
+//  Serve homepage
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ✅ Start server
+// Start server
 app.listen(port, () => {
-  console.log(`✅ Server running at: http://localhost:${port}`);
+  console.log(` Server running at: http://localhost:${port}`);
 });
