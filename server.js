@@ -1,16 +1,25 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import db from './db.js';
+import { createClient } from '@supabase/supabase-js';
 
 const app = express();
 const port = 3000;
 
-// Setup __dirname for ES modules
+// ---------------- SUPABASE SETUP ----------------
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
+
+// ---------------- __DIRNAME ----------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Middleware
+// ---------------- MIDDLEWARE ----------------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -19,47 +28,52 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  try {
-    const result = await db.query(
-      'SELECT * FROM users WHERE username = $1 AND password = $2',
-      [username, password]
-    );
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('username', username)
+    .eq('password', password)
+    .single();
 
-    if (result.rows.length > 0) {
-      res.json({ success: true });
-    } else {
-      res.status(401).json({ success: false, message: 'Invalid username or password' });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Server error' });
+  if (error || !data) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid username or password'
+    });
   }
+
+  res.json({ success: true });
 });
 
 // ---------------- REGISTER ----------------
 app.post('/register', async (req, res) => {
   const { username, password, phone } = req.body;
 
-  try {
-    const existing = await db.query(
-      'SELECT * FROM users WHERE username = $1',
-      [username]
-    );
+  const { data: existing } = await supabase
+    .from('users')
+    .select('id')
+    .eq('username', username)
+    .single();
 
-    if (existing.rows.length > 0) {
-      return res.status(409).json({ success: false, message: 'Username already exists' });
-    }
-
-    await db.query(
-      'INSERT INTO users (username, password, phone) VALUES ($1, $2, $3)',
-      [username, password, phone]
-    );
-
-    res.json({ success: true, message: 'Registration successful' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Error during registration' });
+  if (existing) {
+    return res.status(409).json({
+      success: false,
+      message: 'Username already exists'
+    });
   }
+
+  const { error } = await supabase.from('users').insert([
+    { username, password, phone }
+  ]);
+
+  if (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error during registration'
+    });
+  }
+
+  res.json({ success: true, message: 'Registration successful' });
 });
 
 // ---------------- SAVE RECEIPT ----------------
@@ -67,34 +81,37 @@ app.post('/receipt', async (req, res) => {
   const { name, phone, email, timestamp } = req.body;
   const delivery_id = `id_${Date.now().toString().slice(-6)}`;
 
-  try {
-    await db.query(
-      'INSERT INTO receipts (delivery_id, name, phone, email, timestamp) VALUES ($1,$2,$3,$4,$5)',
-      [delivery_id, name, phone, email, timestamp]
-    );
+  const { error } = await supabase.from('receipts').insert([
+    { delivery_id, name, phone, email, timestamp }
+  ]);
 
-    res.json({ success: true, message: 'Receipt stored successfully' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'DB Error' });
+  if (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'DB Error'
+    });
   }
+
+  res.json({ success: true, message: 'Receipt stored successfully' });
 });
 
 // ---------------- RECEIPT SUMMARY ----------------
 app.get('/receipt-summary', async (req, res) => {
   const { phone } = req.query;
 
-  try {
-    const result = await db.query(
-      'SELECT id, delivery_id, name, phone FROM receipts WHERE phone = $1',
-      [phone]
-    );
+  const { data, error } = await supabase
+    .from('receipts')
+    .select('id, delivery_id, name, phone')
+    .eq('phone', phone);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'DB Error' });
+  if (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'DB Error'
+    });
   }
+
+  res.json(data);
 });
 
 // ---------------- SERVE INDEX ----------------
