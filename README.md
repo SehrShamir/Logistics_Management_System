@@ -3,6 +3,9 @@
 A web-based **Logistics Management System** that streamlines delivery operations by connecting vendors, transporters, and customers in real time. The system ensures **efficient transport management**, **real-time tracking**, **receipt generation**, and **secure authentication**, providing a modern solution for logistics in urban areas.
 
 ---
+Log In:
+      user-admin
+      password-admin1
 
 ## 📌 Features
 - 🔐 **Authentication** – Secure login and registration with role-based access (Vendor, Transporter, Customer).  
@@ -18,7 +21,7 @@ A web-based **Logistics Management System** that streamlines delivery operations
 ## 🛠️ Tech Stack
 - **Frontend**: HTML, CSS, JavaScript  
 - **Backend**: Node.js, Express.js  
-- **Database**: MySQL  
+- **Database**: PostgreSql 
 - **Maps Integration**: Google Maps API (for location and route optimization)  
 - **Authentication**: JWT (JSON Web Tokens)  
 
