@@ -1,11 +1,11 @@
 // db.js
-import mysql from 'mysql2/promise';
+import pkg from 'pg';
+const { Pool } = pkg;
 
-const db = await mysql.createConnection({
-  host: 'localhost',
-  user: 'root',          // ✅ make sure this is correct
-  password: '@1Shamir', // ✅ replace with your MySQL password
-  database: 'om_logistics' // ✅ replace with your DB name
+const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 export default db;
+
